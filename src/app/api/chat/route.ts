@@ -42,8 +42,27 @@ export async function POST(req: Request) {
     );
   }
 
-  if (!process.env.AI_GATEWAY_API_KEY && !process.env.VERCEL_OIDC_TOKEN) {
-    console.info("[chat] No AI Gateway credentials configured.");
+  /*
+   * Credential pre-flight, local only.
+   *
+   * VERCEL_OIDC_TOKEN is a local development convenience that `vercel env
+   * pull` writes into .env.local. It is NOT exposed under that name in the
+   * deployed runtime, where the Gateway is reached through the platform's own
+   * OIDC federation. Checking for it in production returned a false 503 and
+   * blocked a call that would have succeeded.
+   *
+   * So on Vercel we always attempt the call and let a real failure surface.
+   * Locally we keep the clean message, because a developer without
+   * credentials should get an explanation rather than a stream error.
+   */
+  const onVercel = process.env.VERCEL === "1";
+
+  if (
+    !onVercel &&
+    !process.env.AI_GATEWAY_API_KEY &&
+    !process.env.VERCEL_OIDC_TOKEN
+  ) {
+    console.info("[chat] No AI Gateway credentials configured locally.");
     return Response.json(
       { error: "The assistant is not configured yet." },
       { status: 503 },
