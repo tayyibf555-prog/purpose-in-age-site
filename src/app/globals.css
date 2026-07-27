@@ -1,0 +1,509 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Purpose in Age
+
+   Visual language adapted from the Orix Creative "Building Beyond"
+   reference: a deep clay ground carrying the entire page, bone panels
+   floating on it with concave notch corners, a heavy grotesque paired
+   with a Didone italic cut, and full bleed photography.
+
+   Legibility floors (20px body, 48px targets, visible nav) are kept from
+   the business brief, because they come from the reader being 55 to 80,
+   not from any particular visual system.
+   ============================================================ */
+
+@theme {
+  /* --- Color. The clay ground carries the whole page. --- */
+  --color-clay: #5c2a20; /* page ground */
+  --color-clay-deep: #431d16; /* recessed areas, footer */
+  --color-clay-soft: #6d372b; /* hairlines and hover on clay */
+  --color-bone: #f3efe8; /* panels */
+  --color-bone-dim: #e3ddd2; /* secondary panel fills */
+  --color-espresso: #1e1713; /* text on bone, dark panels */
+  --color-espresso-soft: #4a3c34; /* secondary text on bone */
+  --color-sand: #d8b78c; /* accent on clay only, never on bone */
+
+  /* --- Type. Heavy grotesque plus a contrasting italic cut. --- */
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-italic: var(--font-italic-cut), Georgia, serif;
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+
+  /* Nothing below 15px ships. The reader is 55 to 80. */
+  --text-label: 0.9375rem; /* 15px, tracked bullet labels */
+  --text-label--line-height: 1.2;
+  --text-sm: 1.0625rem; /* 17px, captions and meta */
+  --text-sm--line-height: 1.5;
+  --text-base: 1.25rem; /* 20px, body floor */
+  --text-base--line-height: 1.62;
+  --text-lg: 1.375rem; /* 22px */
+  --text-lg--line-height: 1.6;
+  --text-xl: 1.5rem; /* 24px, lead paragraphs */
+  --text-xl--line-height: 1.52;
+  --text-2xl: clamp(1.5rem, 2vw, 1.9rem);
+  --text-2xl--line-height: 1.32;
+  --text-3xl: clamp(1.9rem, 2.7vw, 2.7rem);
+  --text-3xl--line-height: 1.1;
+  --text-4xl: clamp(2.4rem, 3.9vw, 3.7rem);
+  --text-4xl--line-height: 1.02;
+  /* Line height stays at 1 so the overflow-hidden line masks used for the
+     headline reveal do not clip cap heights or descenders. Tightness comes
+     from negative margins between lines, not from sub-1 leading.
+
+     Capped at 5.6rem. The original 8.2rem put the hero at 131px on a 2000px
+     display, which read as shouting rather than confident. */
+  --text-display: clamp(2.7rem, 5.2vw, 5.6rem);
+  --text-display--line-height: 1;
+
+  /* --- Structure --- */
+  --radius-panel: 34px;
+  --radius-inner: 22px;
+  --radius-pill: 999px;
+
+  /* --- Motion --- */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   Base
+   ============================================================ */
+
+@layer base {
+  html {
+    background-color: var(--color-clay);
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-clay);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.032em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Focus is never removed. */
+  :focus-visible {
+    outline: 3px solid var(--focus-ring, var(--color-sand));
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background-color: var(--color-sand);
+    color: var(--color-espresso);
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+@layer components {
+  /* ==========================================================
+     The italic cut. The "Beyond" move from the reference:
+     a heavy grotesque line broken by one Didone italic phrase.
+     ========================================================== */
+  .cut {
+    font-family: var(--font-italic);
+    /* 600, not 400. Vollkorn has real weight and needs it to hold its own
+       beside Archivo 800; at 400 the line goes lopsided. */
+    font-weight: 600;
+    font-style: italic;
+    letter-spacing: -0.012em;
+    /* Smaller bump than the old Didone needed, because Vollkorn already sets
+       optically large. 1.1em here made it overpower the grotesque. */
+    font-size: 1.06em;
+    line-height: 0.94;
+  }
+
+  /* ==========================================================
+     Panels. Bone slabs floating on the clay ground.
+     ========================================================== */
+  .panel {
+    position: relative;
+    border-radius: var(--radius-panel);
+    background-color: var(--color-bone);
+    color: var(--color-espresso);
+    --focus-ring: var(--color-clay);
+  }
+
+  .panel-dark {
+    background-color: var(--color-espresso);
+    color: var(--color-bone);
+    --focus-ring: var(--color-sand);
+  }
+
+  .panel-clay {
+    background-color: var(--color-clay-deep);
+    color: var(--color-bone);
+    --focus-ring: var(--color-sand);
+  }
+
+  .panel-pad {
+    padding: clamp(2rem, 5vw, 5rem) clamp(1.6rem, 4.2vw, 4.5rem);
+  }
+
+  /*
+     The notch, the signature device from the reference: a pill that appears
+     cut into the corner of a panel.
+
+     A radial-gradient mask was the obvious approach and it is wrong here. A
+     circular bite large enough to clear a 230px pill would swallow the whole
+     corner, and an ellipse cannot follow a rounded rectangle. Instead the pill
+     carries a halo of the ground colour, so the "cut" traces the pill exactly
+     and stays correct at any label length. The panel itself is untouched,
+     which also means it keeps its shadow.
+
+     --notch-ground defaults to the clay page ground. Override it when a
+     notched panel sits on something else.
+  */
+  /* Reserve room so panel content never collides with the nested pill. */
+  .notch-br {
+    padding-block-end: calc(clamp(2rem, 5vw, 5rem) + 3.4rem);
+  }
+
+  /*
+     The halo is a sibling of the panel, not a child, so these custom
+     properties are declared here rather than on .notch-*. Declaring them on
+     the panel leaves them unresolved and the halo collapses.
+  */
+  .in-notch-br,
+  .in-notch-tr {
+    --notch-ground: var(--color-clay);
+    --notch-gap: 14px;
+    position: absolute;
+    z-index: 2;
+    padding: var(--notch-gap);
+    background-color: var(--notch-ground);
+    border-radius: var(--radius-pill);
+  }
+
+  .in-notch-br {
+    right: calc(var(--notch-gap) * -1);
+    bottom: calc(var(--notch-gap) * -1);
+  }
+
+  .in-notch-tr {
+    top: calc(var(--notch-gap) * -1);
+    right: calc(var(--notch-gap) * -1);
+  }
+
+  @media (max-width: 640px) {
+    .in-notch-br,
+    .in-notch-tr {
+      --notch-gap: 10px;
+    }
+  }
+
+  /* ==========================================================
+     Buttons. Solid fills only, 48px floor, verb first labels.
+     ========================================================== */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 52px;
+    padding: 0.9rem 1.6rem 0.9rem 1.9rem;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    cursor: pointer;
+    border: 0;
+    transition:
+      background-color 200ms var(--ease-out-quint),
+      color 200ms var(--ease-out-quint);
+  }
+
+  .btn-lg {
+    min-height: 62px;
+    padding: 1.05rem 1.8rem 1.05rem 2.2rem;
+    font-size: var(--text-lg);
+  }
+
+  /* The circular badge riding on the end of a pill, from the reference. */
+  .btn-badge {
+    display: grid;
+    place-items: center;
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 999px;
+    flex-shrink: 0;
+    transition: transform 300ms var(--ease-out-quint);
+  }
+
+  .btn:hover .btn-badge {
+    transform: translate(2px, -2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn-badge,
+    .btn:hover .btn-badge {
+      transition: none;
+      transform: none;
+    }
+  }
+
+  .btn-bone {
+    background-color: var(--color-bone);
+    color: var(--color-espresso);
+  }
+  .btn-bone .btn-badge {
+    background-color: var(--color-espresso);
+    color: var(--color-bone);
+  }
+  .btn-bone:hover {
+    background-color: #ffffff;
+  }
+
+  .btn-espresso {
+    background-color: var(--color-espresso);
+    color: var(--color-bone);
+  }
+  .btn-espresso .btn-badge {
+    background-color: var(--color-bone);
+    color: var(--color-espresso);
+  }
+  .btn-espresso:hover {
+    background-color: #2c221c;
+  }
+
+  .btn-clay {
+    background-color: var(--color-clay);
+    color: var(--color-bone);
+  }
+  .btn-clay .btn-badge {
+    background-color: var(--color-bone);
+    color: var(--color-clay);
+  }
+  .btn-clay:hover {
+    background-color: var(--color-clay-deep);
+  }
+
+  .btn-sand {
+    background-color: var(--color-sand);
+    color: var(--color-espresso);
+  }
+  .btn-sand .btn-badge {
+    background-color: var(--color-espresso);
+    color: var(--color-sand);
+  }
+  .btn-sand:hover {
+    background-color: #c7a377;
+  }
+
+  /* ==========================================================
+     Bullet labels. "• About Us" from the reference.
+     ========================================================== */
+  .label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-sans);
+    font-size: var(--text-label);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+  }
+
+  .label::before {
+    content: "";
+    width: 0.44rem;
+    height: 0.44rem;
+    border-radius: 999px;
+    background-color: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* Uppercase tracked variant, for section markers. */
+  .label-caps {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  /*
+     A masked line for the headline reveal. Padding grows the clip box so
+     ascenders and descenders survive; the negative margin takes the space
+     back so lines still set tight.
+  */
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding-block: 0.1em 0.18em;
+    margin-block-end: -0.16em;
+  }
+
+  /*
+     Full bleed, square edged. The page is a stack of rounded panels, and an
+     unbroken run of them reads as monotonous however good each one is. This
+     breaks out of the gutter and drops the radius so the rhythm has somewhere
+     to land.
+  */
+  .bleed {
+    margin-inline: -14px;
+    border-radius: 0;
+  }
+
+  @media (min-width: 640px) {
+    .bleed {
+      margin-inline: -18px;
+    }
+  }
+
+  /* ==========================================================
+     Text helpers
+     ========================================================== */
+  .measure {
+    max-width: 66ch;
+  }
+  .measure-tight {
+    max-width: 52ch;
+  }
+  .measure-display {
+    max-width: 16ch;
+  }
+
+  .link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+    font-weight: 600;
+  }
+  .panel .link {
+    text-decoration-color: var(--color-clay);
+  }
+  .panel-dark .link,
+  .panel-clay .link,
+  .on-clay .link {
+    text-decoration-color: var(--color-sand);
+  }
+
+  /* Light text on dark grounds reads lighter. Give it air. */
+  .panel-dark :is(p, li),
+  .panel-clay :is(p, li),
+  .on-clay :is(p, li) {
+    line-height: 1.7;
+  }
+
+  /* ==========================================================
+     Long form
+     ========================================================== */
+  .prose-pia {
+    font-size: var(--text-lg);
+    line-height: 1.72;
+  }
+  .prose-pia > * + * {
+    margin-block-start: 1.5em;
+  }
+  .prose-pia h2 {
+    font-size: var(--text-3xl);
+    margin-block-start: 2.1em;
+    margin-block-end: -0.55em;
+  }
+  .prose-pia h3 {
+    font-size: var(--text-2xl);
+    margin-block-start: 1.8em;
+    margin-block-end: -0.5em;
+  }
+  .prose-pia blockquote {
+    font-family: var(--font-italic);
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--text-3xl);
+    line-height: 1.14;
+    letter-spacing: -0.015em;
+    border: 0;
+    padding: 0;
+    margin-block: 1.4em;
+    color: var(--color-clay);
+  }
+  .panel-dark .prose-pia blockquote,
+  .panel-clay .prose-pia blockquote {
+    color: var(--color-sand);
+  }
+  .prose-pia ul {
+    list-style: none;
+    padding-inline-start: 0;
+  }
+  .prose-pia ul > li {
+    position: relative;
+    padding-inline-start: 1.8rem;
+    margin-block-start: 0.7em;
+  }
+  .prose-pia ul > li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.66em;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background-color: var(--color-clay);
+  }
+}
+
+/* ============================================================
+   Motion.
+
+   GSAP drives the reveals. Content ships visible and the `js` class,
+   added by an inline script before paint, is what allows anything to
+   be hidden. So a JavaScript failure degrades to a fully readable page
+   rather than a blank one.
+   ============================================================ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-anim="rise"] {
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .js [data-anim="line"] {
+    opacity: 0;
+  }
+  /* Photography starts inset and wipes open. Declared here so there is no
+     flash of the full frame before GSAP takes over on the first paint. */
+  .js [data-anim-clip] {
+    clip-path: inset(14% 8% 14% 8% round 22px);
+    will-change: clip-path;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-anim] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  [data-anim-clip] {
+    clip-path: none !important;
+  }
+}
